@@ -4,10 +4,24 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
 from datetime import datetime
 import enum
+import os
 
-DATABASE_URL = "sqlite+aiosqlite:///./tasks.db"
+# SQLite configuration (Original)
+# DATABASE_URL = "sqlite+aiosqlite:///./tasks.db"
+
+# MySQL configuration
+# Format: mysql+aiomysql://<user>:<password>@<host>:<port>/<database_name>
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "teja12345")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "3306")
+DB_NAME = os.getenv("DB_NAME", "tasks_db")
+
+DATABASE_URL = f"mysql+aiomysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 
 engine = create_async_engine(DATABASE_URL, echo=True)
+
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base()
 
